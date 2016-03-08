@@ -5,10 +5,7 @@
 <script type="text/javascript">
 function fun1(x) {return Math.cos(x);  }
 function fun2(x) {return Math.sin(x+window.phi);}
-function sleepFor( sleepDuration ){
-    var now = new Date().getTime();
-    while(new Date().getTime() < now + sleepDuration){ /* do nothing */ } 
-}
+
  window.dx=5;
 function draw() {
 window.phi=parseFloat(document.getElementById('phi').value);
@@ -67,11 +64,6 @@ plotpoint(func1,func2);
 
 }
 
-var speed = 5;
-   var y = 10;
-   var x = 250;
-
-
 function showAxes(ctx,axes) {
  var x0=axes.x0, w=ctx.canvas.width;
  var y0=axes.y0, h=ctx.canvas.height;
@@ -85,12 +77,16 @@ function showAxes(ctx,axes) {
 </script>
 </head>
 <body onload="draw()">
+ <div style="text-align:center"><h1>Composizione di moti armonici</h1>
+ Il corpo si muove secondo le seguenti leggi orarie:<br />
+ <img src="https://latex.codecogs.com/gif.latex?%5Clarge%20%5Cleft%5C%7B%5Cbegin%7Bmatrix%7D%20x%28t%29%3DRcos%28%5Comega%20t%29%29%20%5C%5C%20y%28t%29%3DRsin%28%5Comega%20t%20&plus;%5Cphi%29%29%20%5Cend%7Bmatrix%7D%5Cright.">
+<br />
 <canvas id="canvas" width="302" height="228"></canvas><br />
 <label for="phi">Fase (phi):</label><input type="text" id="phi" value="0">
 <button onclick="draw()">Disegna con questa fase</button><br />
 <hr />
 <button onclick="document.getElementById('phi').value=Math.PI/2;draw()" >Imposta fase = PI/2</button>
 <button onclick="document.getElementById('phi').value=Math.PI;draw()" >Imposta fase = PI</button>
-<button onclick="document.getElementById('phi').value=(Math.random()*2-1)*Math.PI*2;draw();">Imposta fase random</button>
+<button onclick="document.getElementById('phi').value=(Math.random()*2-1)*Math.PI*2;draw();">Imposta fase random</button></div>
 </body>
 </html>
