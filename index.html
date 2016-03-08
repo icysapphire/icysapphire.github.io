@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-<head><title>Canvas code example</title>
+<head><title>Composizione di moti armonici</title>
+ <meta name="viewport" content="initial-scale=1, maximum-scale=1, width=device-width" />
 <script type="text/javascript">
 function fun1(x) {return Math.cos(x);  }
 function fun2(x) {return Math.sin(x+window.phi);}
@@ -70,29 +71,6 @@ var speed = 5;
    var y = 10;
    var x = 250;
 
-function  drawScreen (func1,func2) {
- var xx, yy, dx=4, x0=axes.x0, y0=axes.y0, scale=axes.scale;
- var canvas = document.getElementById("canvas");
- if (null==canvas || !canvas.getContext) return;
-
- var axes={}, context=canvas.getContext("2d");
-
-      //Box
-      context.strokeStyle = '#000000';
-      context.strokeRect(1,  1, canvas.width-2, canvas.height-2);
-
-
-      // Create ball
-
-      x=func1(tt/scale);
-
-      context.fillStyle = "#000000";
-      context.beginPath();
-      context.arc(x,y,15,0,Math.PI*2,true);
-      context.closePath();
-      context.fill();
-
-   }
 
 function showAxes(ctx,axes) {
  var x0=axes.x0, w=ctx.canvas.width;
