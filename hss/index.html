@@ -32,6 +32,7 @@ window.code=code;
 }
 
 function switchScreen(i){
+  $('input').hide();
   $('body').css('background-color','rgb('+window.color_set[window.code[i]][0]+','+window.color_set[window.code[i]][1]+','+window.color_set[window.code[i]][2]+')');
 }
   
@@ -44,5 +45,5 @@ for(i=0; i<7; i++){
   }</script>
 </head>
 <body>
-<input type="button" value="Generate Code" style="font-size:80px" onclick="$(this).hide();generateCode();setTimeout(broadcastCode,600);">
+<input type="button" value="Generate Code" style="font-size:80px" onclick="generateCode();setTimeout(broadcastCode,600);">
 </body>
