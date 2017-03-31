@@ -28,10 +28,10 @@ alert("Generated code "+code.join());
 return code;
 }
 function broadcastCode(code){
+  b=500;
 for(i=0; i<5; i++){
   console.log('rgb('+color_set[code[i]][0]+','+color_set[code[i]][1]+','+color_set[code[i]][2]+')');
-  $('body').css('background-color','rgb('+color_set[code[i]][0]+','+color_set[code[i]][1]+','+color_set[code[i]][2]+')');
-  pausecomp(500);
+  setTimeout(function(){$('body').css('background-color','rgb('+color_set[code[i]][0]+','+color_set[code[i]][1]+','+color_set[code[i]][2]+')');}, b + i*500);
 }
   }</script>
 </head>
