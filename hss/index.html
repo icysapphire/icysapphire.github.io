@@ -27,11 +27,15 @@ for(i=0; i<5; i++){
 alert("Generated code "+code.join());
 window.code=code;
 }
+
+  function switchScreen(i){
+    function(){$('body').css('background-color','rgb('+window.color_set[window.code[i]][0]+','+window.color_set[window.code[i]][1]+','+window.color_set[window.code[i]][2]+')');}
+  }
 function broadcastCode(code){
   b=500;
 for(i=0; i<5; i++){
   //console.log('rgb('+color_set[code[i]][0]+','+color_set[code[i]][1]+','+color_set[code[i]][2]+')');
-  setTimeout(function(){$('body').css('background-color','rgb('+window.color_set[window.code[i]][0]+','+window.color_set[window.code[i]][1]+','+window.color_set[window.code[i]][2]+')');}, b + i*500);
+  setTimeout(switchScreen.bind(null,i), b + i*500);
 }
   }</script>
 </head>
