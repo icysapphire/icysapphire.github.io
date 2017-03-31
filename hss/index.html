@@ -1,0 +1,26 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+window.color_set=[
+  [255, 0, 0],
+  [0,255,0],
+  [0,0,255]
+];
+function generateCode(){
+code = new Array():
+for(i=0; i<5; i++){
+  code[i]=Math.floor(Math.random()*3);
+}
+alert("Generated code "+code.join());
+return code;
+}
+function broadcastCode(code)
+for(i=0; i<5; i++){
+  $('body').css('background-color','rgb('+code[i][0]+','+code[i][1]+','+code[i][2]+')').delay(500);
+}
+}
+</head>
+<body>
+<input type="button" value="Generate Code" onclick="$(this).hide();broadcastCode(generateCode());">
+</body>
