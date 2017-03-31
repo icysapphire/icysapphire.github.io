@@ -28,9 +28,10 @@ alert("Generated code "+code.join());
 window.code=code;
 }
 
-  function switchScreen(i){
-    function(){$('body').css('background-color','rgb('+window.color_set[window.code[i]][0]+','+window.color_set[window.code[i]][1]+','+window.color_set[window.code[i]][2]+')');}
-  }
+function switchScreen(i){
+  $('body').css('background-color','rgb('+window.color_set[window.code[i]][0]+','+window.color_set[window.code[i]][1]+','+window.color_set[window.code[i]][2]+')');
+}
+  
 function broadcastCode(code){
   b=500;
 for(i=0; i<5; i++){
