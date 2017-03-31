@@ -36,7 +36,7 @@ function broadcastCode(){
   for(i=0; i<7; i++){
     setTimeout(switchScreen.bind(null,i), b + i*500);
     // Rosso lungo
-    if(i>0) b=1200;
+    if(i==0) b=1200;
   }
   setTimeout(function(){$('input').val('New code').show();}, b + i*500);
 }
