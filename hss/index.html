@@ -14,10 +14,15 @@ function pausecomp(millis)
     do { curDate = new Date(); }
     while(curDate-date < millis);
 }
+function newColor(old){
+  newc = Math.floor(Math.rand()*3);
+  if (newc==old) return newColor(old);
+  else return newc;
+}
 function generateCode(){
 code = new Array();
 for(i=0; i<5; i++){
-  code[i]=Math.floor(Math.random()*3);
+  code[i]=newColor(code[i-1]);
 }
 alert("Generated code "+code.join());
 return code;
