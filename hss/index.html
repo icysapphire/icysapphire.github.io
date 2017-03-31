@@ -21,7 +21,7 @@ function generateCode(){
   for(i=1; i<5; i++){
     code[i]=newColor(code[i-1]);
   }
-  code[i]=window.colorset.length -1;
+  code[i]=window.color_set.length -1;
   $('input').val(code.join());
   window.code=code;
 }
