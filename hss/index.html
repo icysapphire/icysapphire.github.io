@@ -19,7 +19,7 @@ function broadcastCode(code)
 for(i=0; i<5; i++){
   $('body').css('background-color','rgb('+code[i][0]+','+code[i][1]+','+code[i][2]+')').delay(500);
 }
-}
+  }</script>
 </head>
 <body>
 <input type="button" value="Generate Code" onclick="$(this).hide();broadcastCode(generateCode());">
