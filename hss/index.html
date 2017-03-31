@@ -5,7 +5,8 @@
 window.color_set=[
   [255, 0, 0],
   [0,255,0],
-  [0,0,255]
+  [0,0,255],
+  [255,255,255]
 ];
 function pausecomp(millis)
 {
@@ -24,6 +25,7 @@ code = new Array();
 for(i=0; i<5; i++){
   code[i]=newColor(code[i-1]);
 }
+  code[i]=3;
 alert("Generated code "+code.join());
 window.code=code;
 }
