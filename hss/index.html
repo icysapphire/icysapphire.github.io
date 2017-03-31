@@ -22,7 +22,8 @@ function newColor(old){
 }
 function generateCode(){
 code = new Array();
-for(i=0; i<5; i++){
+code[0]=1;
+for(i=1; i<5; i++){
   code[i]=newColor(code[i-1]);
 }
   code[i]=3;
@@ -34,14 +35,14 @@ function switchScreen(i){
   $('body').css('background-color','rgb('+window.color_set[window.code[i]][0]+','+window.color_set[window.code[i]][1]+','+window.color_set[window.code[i]][2]+')');
 }
   
-function broadcastCode(code){
+function broadcastCode(){
   b=500;
-for(i=0; i<6; i++){
+for(i=0; i<7; i++){
   //console.log('rgb('+color_set[code[i]][0]+','+color_set[code[i]][1]+','+color_set[code[i]][2]+')');
   setTimeout(switchScreen.bind(null,i), b + i*500);
 }
   }</script>
 </head>
 <body>
-<input type="button" value="Generate Code" style="font-size:50px" onclick="$(this).hide();generateCode();broadcastCode();">
+<input type="button" value="Generate Code" style="font-size:50px" onclick="$(this).hide();generateCode();setTimeout(broadcastCode,500);">
 </body>
