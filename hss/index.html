@@ -36,7 +36,7 @@ function switchScreen(i){
   
 function broadcastCode(code){
   b=500;
-for(i=0; i<5; i++){
+for(i=0; i<6; i++){
   //console.log('rgb('+color_set[code[i]][0]+','+color_set[code[i]][1]+','+color_set[code[i]][2]+')');
   setTimeout(switchScreen.bind(null,i), b + i*500);
 }
