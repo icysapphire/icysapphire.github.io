@@ -15,7 +15,7 @@ for(i=0; i<5; i++){
 alert("Generated code "+code.join());
 return code;
 }
-function broadcastCode(code)
+function broadcastCode(code){
 for(i=0; i<5; i++){
   $('body').css('background-color','rgb('+code[i][0]+','+code[i][1]+','+code[i][2]+')').delay(500);
 }
