@@ -25,16 +25,16 @@ for(i=0; i<5; i++){
   code[i]=newColor(code[i-1]);
 }
 alert("Generated code "+code.join());
-return code;
+window.code=code;
 }
 function broadcastCode(code){
   b=500;
 for(i=0; i<5; i++){
-  console.log('rgb('+color_set[code[i]][0]+','+color_set[code[i]][1]+','+color_set[code[i]][2]+')');
-  setTimeout(function(){$('body').css('background-color','rgb('+color_set[code[i]][0]+','+color_set[code[i]][1]+','+color_set[code[i]][2]+')');}, b + i*500);
+  //console.log('rgb('+color_set[code[i]][0]+','+color_set[code[i]][1]+','+color_set[code[i]][2]+')');
+  setTimeout(function(){$('body').css('background-color','rgb('+window.color_set[window.code[i]][0]+','+window.color_set[window.code[i]][1]+','+window.color_set[window.code[i]][2]+')');}, b + i*500);
 }
   }</script>
 </head>
 <body>
-<input type="button" value="Generate Code" onclick="$(this).hide();broadcastCode(generateCode());">
+<input type="button" value="Generate Code" onclick="$(this).hide();generateCode();broadcastCode();">
 </body>
