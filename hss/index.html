@@ -7,6 +7,9 @@ window.color_set=[
   [0,255,0],
   [0,0,255]
 ];
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 function generateCode(){
 code = new Array();
 for(i=0; i<5; i++){
@@ -18,7 +21,8 @@ return code;
 function broadcastCode(code){
 for(i=0; i<5; i++){
   console.log('rgb('+color_set[code[i]][0]+','+color_set[code[i]][1]+','+color_set[code[i]][2]+')');
-  $('body').delay(500).css('background-color','rgb('+color_set[code[i]][0]+','+color_set[code[i]][1]+','+color_set[code[i]][2]+')');
+  $('body').css('background-color','rgb('+color_set[code[i]][0]+','+color_set[code[i]][1]+','+color_set[code[i]][2]+')');
+  await sleep(500);
 }
   }</script>
 </head>
