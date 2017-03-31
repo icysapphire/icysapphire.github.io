@@ -27,7 +27,7 @@ for(i=1; i<5; i++){
   code[i]=newColor(code[i-1]);
 }
   code[i]=3;
-alert("Generated code "+code.join());
+$('input').val(code.join());
 window.code=code;
 }
 
@@ -44,5 +44,5 @@ for(i=0; i<7; i++){
   }</script>
 </head>
 <body>
-<input type="button" value="Generate Code" style="font-size:50px" onclick="$(this).hide();generateCode();setTimeout(broadcastCode,500);">
+<input type="button" value="Generate Code" style="font-size:80px" onclick="$(this).hide();generateCode();setTimeout(broadcastCode,500);">
 </body>
