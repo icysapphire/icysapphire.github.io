@@ -23,8 +23,7 @@ function generateCode(){
     code[i]=newColor(code[i-1]);
   }
   code[i]=window.color_set.length -1;
-  $('input').val(code.join());
-  window.code=code;
+   window.code=code;
   $('div').html('Code: '+code.join());
 }
 
@@ -41,7 +40,7 @@ function broadcastCode(){
     // Rosso lungo
     if(i==0) b=3200;
   }
-  setTimeout(function(){$('input').val('New code').show();$('div').show()}, b + i*step);
+  setTimeout(function(){$('input[type=submit]').val('New code').show();$('div').show()}, b + i*step);
 }
 </script>
 </head>
