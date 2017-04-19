@@ -33,12 +33,13 @@ function switchScreen(i){
   
 function broadcastCode(){
   b=500;
+  step=100;
   for(i=0; i<7; i++){
-    setTimeout(switchScreen.bind(null,i), b + i*500);
+    setTimeout(switchScreen.bind(null,i), b + i*step);
     // Rosso lungo
     if(i==0) b=3200;
   }
-  setTimeout(function(){$('input').val('New code').show();}, b + i*500);
+  setTimeout(function(){$('input').val('New code').show();}, b + i*step);
 }
 </script>
 </head>
