@@ -16,6 +16,7 @@ function newColor(old){
   else return newc;
 }
 function generateCode(){
+  $('div').hide();
   code = new Array();
   code[0]=0;
   for(i=1; i<5; i++){
@@ -24,6 +25,7 @@ function generateCode(){
   code[i]=window.color_set.length -1;
   $('input').val(code.join());
   window.code=code;
+  $('div').html('Code: '+code.join());
 }
 
 function switchScreen(i){
@@ -33,16 +35,19 @@ function switchScreen(i){
   
 function broadcastCode(){
   b=500;
-  step=200;
+  step=$('#ms').val();
   for(i=0; i<7; i++){
     setTimeout(switchScreen.bind(null,i), b + i*step);
     // Rosso lungo
     if(i==0) b=3200;
   }
-  setTimeout(function(){$('input').val('New code').show();}, b + i*step);
+  setTimeout(function(){$('input').val('New code').show();$('div').show(), b + i*step);
 }
 </script>
 </head>
 <body>
+  <div style="display:none"></div>
+  <input type="text" value="200" style="font-size:50px" id="ms">
+
 <input type="button" value="Generate Code" style="font-size:90px" onclick="generateCode();setTimeout(broadcastCode,600);">
 </body>
