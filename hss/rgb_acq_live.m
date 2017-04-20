@@ -13,6 +13,7 @@ end
 
 v = videoinput(camera_name, camera_id, format);
 src=getselectedsource(v);
+
 % May need to be tweaked according to camera
 if isprop(src,'Exposure')
     set(src, 'Exposure', -7)
@@ -135,14 +136,13 @@ while(RedBoxes>0)
             
             tmp_color(obj) = detected_in_current(obj);
             tzz(end+1)=detected_in_current(obj)-1;
-            if(tmp_same_color_frames(obj) >=  1) % Persiste in 10 frame, quindi è valido
+            if(tmp_same_color_frames(obj) >=  2) % Persiste in 10 frame, quindi è valido
                 
                 isColor(end+1,obj) = detected_in_current(obj);
                 k_color(obj)=size(isColor,1);
                 if(detected_in_current(obj)==end_color) RedBoxes = RedBoxes-1;
                 end
-                %v.CurrentTime;
-                %imshow(data)
+
                
                 %disp('Rilevata variazione di stato.. Premere un tasto..');
                 %pause;
