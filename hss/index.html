@@ -24,7 +24,7 @@ function generateCode(){
   }
   code[i]=window.color_set.length -1;
    window.code=code;
-  $('div').html("<input type='button' value='Replay code' onclick='setTimeout(broadcastCode,600);'><br />Code: "+code.join());
+  $('div').html("<input type='button' value='Replay code' id='replay' onclick='setTimeout(broadcastCode,600);'><br />Code: "+code.join());
 }
 
 function switchScreen(i){
@@ -40,7 +40,7 @@ function broadcastCode(){
     // Rosso lungo
     if(i==0) b=3200;
   }
-  setTimeout(function(){$('#button1').val('New code').show();$('input[type=text]').show();$('div').show()}, b + i*step);
+  setTimeout(function(){$('#button1').val('New code').show();$('#ms,#replay').show();$('div').show()}, b + i*step);
 }
 </script>
 </head>
