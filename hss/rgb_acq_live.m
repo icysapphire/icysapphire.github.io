@@ -14,7 +14,9 @@ end
 v = videoinput(camera_name, camera_id, format);
 src=getselectedsource(v);
 % May need to be tweaked according to camera
-set(src, 'Exposure', -7)
+if isprop(src,'Exposure')
+    set(src, 'Exposure', -7)
+end
 
 % Set the properties of the video object
 set(v, 'FramesPerTrigger', Inf);

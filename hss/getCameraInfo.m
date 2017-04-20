@@ -7,4 +7,4 @@ camera_info = infoimaq.DeviceInfo;
 camera_info_spec=camera_info(end);
 fmt=camera_info_spec.SupportedFormats
 camera_id = camera_info_spec.DeviceID;
-resolution = 'YUY2_320x240';
+resolution = char(fmt(11));
