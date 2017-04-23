@@ -1,7 +1,6 @@
 
 a = imaqhwinfo;
-tzz=[];
-tocs=[];
+tocs=[]; % Vector containing acquisition times
 clc;
 [camera_name, camera_id, format] = getCameraInfo(a);
 
@@ -14,7 +13,8 @@ end
 v = videoinput(camera_name, camera_id, format);
 src=getselectedsource(v);
 
-% May need to be tweaked according to camera
+% FUNDAMENTAL: May need to be tweaked according to camera
+% Decoding may not work well when using cameras without this parameter
 if isprop(src,'Exposure')
     set(src, 'Exposure', -7)
 end
@@ -38,8 +38,7 @@ start_color = 1;
 end_color=length(color_set);
 black_color=end_color;
 
-%color_set = [255 0 0; 0 255 0; 0 0 255; 255,255,0; 0,255,255; 255 255 255];
-disp('searching for device')
+disp('Searching for device')
 while detectedRed<1
     k=k+1;
     data = getsnapshot(v);
@@ -135,8 +134,7 @@ while(RedBoxes>0)
         if isColor(k_color(obj),obj) ~= detected_in_current(obj)
             
             tmp_color(obj) = detected_in_current(obj);
-            tzz(end+1)=detected_in_current(obj)-1;
-            if(tmp_same_color_frames(obj) >=  2) % Persiste in 10 frame, quindi è valido
+            if(tmp_same_color_frames(obj) >=  2) % Persiste, quindi è valido
                 
                 isColor(end+1,obj) = detected_in_current(obj);
                 k_color(obj)=size(isColor,1);
