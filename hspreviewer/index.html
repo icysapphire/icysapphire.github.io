@@ -1,0 +1,89 @@
+<html>
+<script>
+// PARAMETERS
+framerate=10;
+</script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script>
+function enableButton(){
+  $('.play').removeAttr('disabled');
+}
+
+function renderFrame(i_, j_){
+  for (i=0; i<i_; i++){
+	   for (j=0; j<j_; j++){
+       $("#p"+i+"-"+j).css({'background-color':window.frame[i][j]});
+     }
+  }
+};
+
+function createPixels(i_, j_){
+  console.log(i_);
+  console.log(j_);
+  $('#grid_in').html('');
+  for (i=0; i<i_; i++){
+     for (j=0; j<j_; j++){
+       $('#grid_in').append($("<div class='pixel' id='p"+i+"-"+j+"'>").css({'left':i*window.m+Math.random()*3, 'top':j*window.m+Math.random()*3, 'background-color':window.frame[i][j]}));
+     }
+   }
+}
+
+function runGif(){
+  // Remove script's copies
+  $('html').find('script').filter(function(){return $(this).attr('src') === 'bundle.js'}).remove();
+  // Load again the script
+  $.getScript( "bundle.js");
+
+}
+
+
+function play_url(){
+  if($('#url').val() != "") {
+  window.url=$('#url').val(); play();
+  }
+}
+
+function play_local(){
+  if($('#file').val() != "")
+  {
+    // Create data-URI from local file
+    var reader  = new FileReader();
+    reader.readAsDataURL(document.querySelector('input[type=file]').files[0]);
+    reader.addEventListener("load", function () {
+      window.url = reader.result;
+      play();
+    }, false);
+  }
+}
+function resizeGrid(cols){
+  $('#grid_in').width(window.m*cols);
+}
+function play(){
+  m=$('#spacing').val();
+  $('.play').attr('disabled','disabled');
+  runGif();
+}
+</script>
+<style>
+body{color:white; text-align:center}
+#grid_in{position:relative; margin:0 auto}
+.pixel{width:5px; height:8px;position:absolute}
+</style>
+<body style="background-color:black">
+  <h1>HS Previewer</h1>
+  <hr>
+  <div style="width:48%;float:left">
+    Load from your computer:
+    <input id ="file" type="file" />
+  </div>
+  <div style="width:48%;float:right"> Or from web:
+  URL: <input type="text" id="url" value ="http://icysapphire.github.io/hspreview/animation_ship_color_32.gif" placeholder="Input url.." />
+</div><br /><hr style="clear:both">
+  Spacing: <input type="text" value="20" id="spacing" style="width:30px"> <br /><br />
+  <input class="play" type="submit" value="Play File" onclick="play_local()">
+  <input class="play" type="submit" value="Play URL" onclick="play_url()">
+
+<br /><br /><div id="grid" style="border:1px dashed white; margin:0 auto; position:relative"><div id="grid_in"></div></div>
+</body>
+</html>
