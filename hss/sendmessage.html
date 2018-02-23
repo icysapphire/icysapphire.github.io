@@ -1,0 +1,52 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+window.color_set=[
+  [255, 0, 0],
+  [0,255,0],
+  [0,0,255],
+  [255,255,0], //yellow
+  [0,255,255], //cyan
+  [255,255,255]
+];
+function newColor(old){
+  newc = Math.floor(Math.random()*5);
+  if (newc==old) return newColor(old);
+  else return newc;
+}
+function generateCode(){
+  $('div').hide();
+  code = new Array();
+  code[0]=0;
+  for(i=1; i<5; i++){
+    code[i]=newColor(code[i-1]);
+  }
+  code[i]=window.color_set.length -1;
+   window.code=code;
+  $('div').html("<input type='button' value='Replay code' id='replay' onclick='setTimeout(broadcastCode,600);'><br />Code: "+code.join());
+}
+
+function switchScreen(i){
+  $('input').hide();
+  $('body').css('background-color','rgb('+window.color_set[window.code[i]][0]+','+window.color_set[window.code[i]][1]+','+window.color_set[window.code[i]][2]+')');
+}
+  
+function broadcastCode(){
+  b=500;
+  step=$('#ms').val();
+  for(i=0; i<7; i++){
+    setTimeout(switchScreen.bind(null,i), b + i*step);
+    // Rosso lungo
+    if(i==0) b=3200;
+  }
+  setTimeout(function(){$('#button1').val('New code').show();$('#ms,#replay').show();$('div').show()}, b + i*step);
+}
+</script>
+</head>
+<body>
+  <div style="display:none"></div>
+  <input type="text" value="200" style="font-size:50px" id="ms">
+
+<input type="button" id="button1" value="Generate Code" style="font-size:90px" onclick="generateCode();setTimeout(broadcastCode,600);">
+</body>
