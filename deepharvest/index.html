@@ -135,7 +135,7 @@ function newGameFromNetwork(){
 		}		
 	});
 	$('#your_score').html("<h3>Loading.. Please wait!</h3>");
-	$.getJSON("http://localhost:5000/",
+	$.getJSON("http://sailab.diism.unisi.it:5000/",
 	function(data){
 		window.o = data;
 		window.actions = data.actions;
