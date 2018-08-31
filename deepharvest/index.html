@@ -1,6 +1,6 @@
 <html>
 	<head>
-
+ <meta charset="UTF-8"> 
 	<meta name="viewport" content="width=device-width">
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
@@ -119,6 +119,7 @@ function newGame(){
 }
 
 function newGameFromNetwork(){
+	$('#modal').fadeOut();
 	clearTimeout(window.nextMovePlayer);
 	$('#grid, #score').html('');
 	$('#bar').html(window.emptybar);
@@ -266,16 +267,17 @@ function highlight_moves(){
 
 function update_score(){
 	if(window.r !== undefined)
-		$('#score_new').show().html(Math.round(window.r)).delay(200).fadeOut();
+		$('#score_new').show().html(((window.r > 0) ? "<span style='color:green'>+" : "<span style='color:red'>" )+Math.round(window.r)+"</span>").delay(400).fadeOut();
 	if(window.userPlay){
-		$('#your_score').html("Your score: <b>"+Math.round(window.score)+"</b> (moves: "+(50-window.moves)+"/50)");
+		$('#your_score').html("Your score: <b>"+Math.round(window.score)+"</b> ("+(50-window.moves)+"/50)");
 		if(!window.canMove) gameOver();
 	} else {
-		$('#AI_score').html(", AI score: <b>"+Math.round(window.score)+"</b> (moves: "+(50-window.moves)+"/50)");
+		$('#AI_score').html("- AI score: <b>"+Math.round(window.score)+"</b> ("+(50-window.moves)+"/50)");
 	}
 }
 
 function AIPlayTheNext(){
+	console.log('playing the next');
 	while(window.moving) {}
 	if($('.bonus').length != 4) alert("error: "+$('.bonus').length);
 	act = window.actions[window.AIPlayIdx];
@@ -291,27 +293,38 @@ function AIPlayTheNext(){
 			}
 			console.log("("+window.j+","+window.i+","+window.score+")");
 			window.AIPlayIdx++;
-			if(window.AIPlayIdx < 50) window.nextMovePlayer = setTimeout(function(){AIPlayTheNext();},150);
+			if(window.AIPlayIdx < 50) 
+			{
+				console.log('registering new move..');
+				window.nextMovePlayer = setTimeout(function(){AIPlayTheNext();},200);}
 			else gameOver();
 }
 
 function gameOver(){
+	console.log('calling game over');
 	if(window.userPlay){
-		$('#grid').fadeOut();
+		$('#grid,#bar').fadeOut();
+		$('#modal').show().html("<h2>OK. Now AI will play the same game.</h2>");
 		window.score = 0;
 		window.moves = 50;
 		$("#time").timer('remove').hide();
 		window.canMove = false;
 		$('#grid').html(window.gridbackup);	
 		window.i = window.original_i; window.j = window.original_j;
-		deploy(false);
+		//deploy(false);
 		window.userPlay = false;
 		window.AIPlayIdx = 0;
-		$('#grid').fadeIn(function(){AIPlayTheNext();});
+		$('#grid,#bar').delay(3000).fadeIn(function(){
+			if ($(":animated").length === 0)
+			$('#modal').fadeOut(function(){
+				console.log('starting loop');
+				AIPlayTheNext();});
+			
+		});
 		
 	} else {
 		if(parseInt($("#your_score b").text()) > parseInt($("#AI_score b").text())) winner = "You"; else winner = "AI";
-		$('#bar').append("<h3 onclick='newGameFromNetwork();'>"+winner+" won! Press SPACE to start a new game or click here.</h3>");
+		$('#modal').html("<h2 onclick='newGameFromNetwork();'>"+winner+" won! Press SPACE to start a new game or click here.</h2>").show();
 	}
 }
 </script>
@@ -320,17 +333,21 @@ function gameOver(){
 	height:90%;
 	width:90%;
 	margin:0 auto;
+	position:relative;
 }
 #bar{
+	position:relative;
 	height:100px;
 	background-color:rgba(255,255,255,0.7);
-	font-color:black; font-size:25px;
+	font-color:black;
 	padding:15px;
 }
 #time {border:1px solid black;padding:2px; margin-right:4px}
 #score_new {
 	font-size:45px;
-	font-weight:bold
+	font-weight:bold;
+	background-color:white;
+	position:absolute;top:5%;right:5%
 }
 #container .row {
     display: flex;
@@ -359,6 +376,9 @@ function gameOver(){
 
 .boy {
 	background-image:url('imgs/Boy-64.png');
+	background-size: contain;
+background-position: center center;
+background-repeat: no-repeat;
 }
 
 .bonus {
@@ -383,17 +403,34 @@ function gameOver(){
     width:auto;
     float:left
 }
+#modal {
+	position: absolute;top: 39%;width: 80%;background: white;margin: 0 auto;padding: 5px;text-align: center;display:none;
+	left:10%;
+}
+html {
+  font-size: 16px;
+}
+@media screen and (min-width: 370px) {
+html{font-size: 14px;}
+}
+    
+@media screen and (min-width: 767px) {
+html{font-size: 22px;}
+}
 
 </style>
 </head>
 <body style="background-image:url('imgs/grass2.jpg'); background-size:cover">
 	<div id="null"></div>
-<div id="container">
+<div id="container" tabindex="0">
+	<div id="modal" style=""></div>
 	<div id="grid">
 	</div>
 	<div id="bar">
-		<div id="time" style="float:left"></div>
-		<div style="float:left" id="your_score"><h3 onclick='newGameFromNetwork(); $(this).hide();'>Press SPACE or click here to play.</h3></div><div style="float:left" id="AI_score"></div>
+		<div id="time" style="float:left"></div><br style="clear:both" />
+		<div style="float:left" id="your_score"><h3 onclick='newGameFromNetwork(); $(this).hide();'>
+			Instructions: Press ← → ↑ ↓ or move the mouse to play.<br />
+			<i>Press SPACE or click here to play.</i></h3></div><div style="float:left" id="AI_score"></div>
 		<div style="float:right" id="score_new"></div>
 		<br style="clear:both">
 	</div>
