@@ -337,7 +337,6 @@ function gameOver(){
 }
 #bar{
 	position:relative;
-	height:100px;
 	background-color:rgba(255,255,255,0.7);
 	font-color:black;
 	padding:15px;
@@ -430,7 +429,9 @@ html{font-size: 22px;}
 		<div id="time" style="float:left"></div><br style="clear:both" />
 		<div style="float:left" id="your_score"><h3 onclick='newGameFromNetwork(); $(this).hide();'>
 			Instructions: Press ← → ↑ ↓ or move the mouse to play.<br />
-			<i>Press SPACE or click here to play.</i></h3></div><div style="float:left" id="AI_score"></div>
+			<i>Press SPACE or click here to play.</i></h3>
+			<br />
+			</div><div style="float:left" id="AI_score"></div>
 		<div style="float:right" id="score_new"></div>
 		<br style="clear:both">
 	</div>
