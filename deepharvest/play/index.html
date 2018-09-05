@@ -1,0 +1,440 @@
+<html>
+	<head>
+ <meta charset="UTF-8"> 
+	<meta name="viewport" content="width=device-width">
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/timer.jquery/0.7.0/timer.jquery.js"></script>
+<script>
+	function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+	moving = false;
+	HOLES = 7;
+	BONUSES = 4;
+	N = 9;
+	M = 9;
+	score = 0;
+	canMove = false;
+	userPlay = true;
+	
+	function pick(i,j){
+		if(i>=0 && j>=0 && i<N && j<M)
+		return $(".row").eq(i).children("div").eq(j);
+		else return $('#null');
+	}
+	
+$(function(){
+	window.emptybar = $('#bar').html();
+});
+
+$(document).keydown(function(e) {
+    switch(e.which) {
+		case 32: // space
+        newGameFromNetwork();
+        break;
+        
+        case 37: // left
+        pick(window.i,window.j-1).click();
+        break;
+
+        case 38: // up
+        pick(window.i-1,window.j).click();
+        break;
+
+        case 39: // right
+        pick(window.i,window.j+1).click();
+        break;
+
+        case 40: // down
+        pick(window.i+1,window.j).click();
+        break;
+
+        default: return; // exit this handler for other keys
+    }
+    e.preventDefault(); // prevent the default action (scroll / move caret)
+});
+
+function newGame(){
+	$('#grid, #score').html('');
+	var i;
+	for (i = 0; i < N; i++) {
+		$('#grid').append("<div class='row'></div>");
+	}		
+		
+	$( ".row" ).each(function( index ) {
+		var i;
+		for (i = 0; i < M; i++) {
+			$(this).append("<div></div>");
+		}		
+	});
+	
+	for (i = 0; i < HOLES; ) {
+		n = Math.floor(Math.random() * 9);
+		m = Math.floor(Math.random() * 9);
+		if(pick(n,m).children(".item").length == 0){
+			pick(n,m).append("<div class='item hole' />");
+			i++;
+		}
+	}
+	
+	var randnum = [];
+	var max=64;
+	var min=16;
+	var sum_rand =0;
+	for(i=0; i<4; i++) {
+		randnum[i] = (Math.random()*32767) %(max-min + 1) + min;
+		sum_rand += randnum[i];
+	}
+	
+	for(i=0; i<BONUSES; ) {
+		var reward = 100*randnum[i]/sum_rand;
+		n = Math.floor(Math.random() * 9);
+		m = Math.floor(Math.random() * 9);
+		if(pick(n,m).find("div").length == 0){
+			pick(n,m).append("<div class='label'>"+Math.round(reward)+"</div>"+"<div class='item bonus' data-reward='"+reward+"' style='width:"+reward/52*100+"%;' >"+"</div>");
+			i++;
+		}
+	}
+	
+	var placed = false;
+	while (!placed ) {
+		n = Math.floor(Math.random() * 9);
+		m = Math.floor(Math.random() * 9);
+		if(pick(n,m).children(".item").length == 0){
+			pick(n,m).append("<div class='item boy' />");
+			window.i = n; window.j = m;
+			placed = true;
+			window.score = 0;
+			window.moves = 50;
+			window.canMove = true;
+			highlight_moves();
+		}
+	}
+	
+	window.gridbackup = $('#grid').html();
+	
+	deploy();
+}
+
+function newGameFromNetwork(){
+	$('#modal').fadeOut();
+	clearTimeout(window.nextMovePlayer);
+	$('#grid, #score').html('');
+	$('#bar').html(window.emptybar);
+	window.userPlay = true;
+	var i;
+	for (i = 0; i < N; i++) {
+		$('#grid').append("<div class='row'></div>");
+	}		
+		
+	$( ".row" ).each(function( index ) {
+		var i;
+		for (i = 0; i < M; i++) {
+			$(this).append("<div></div>");
+		}		
+	});
+	$('#your_score').html("<h3>Loading.. Please wait!</h3>");
+	$.getJSON("http://sailab.diism.unisi.it:5000/",
+	function(data){
+		window.o = data;
+		window.actions = data.actions;
+		$.each( data.objects, function( idx,obj ) {
+
+			if(obj.channel == 2){
+			  pick(obj.y,obj.x).append("<div class='item boy' />");
+			  window.i = obj.y; window.j = obj.x;
+			  window.original_i = window.i; window.original_j = window.j;
+				placed = true;
+				window.score = 0;
+				window.moves = 50;
+				window.canMove = true;
+				highlight_moves();
+			}
+			else if(obj.channel == 1){
+				pick(obj.y,obj.x).append("<div class='label'>"+Math.round(obj.reward)+"</div>"+"<div class='item bonus' data-reward='"+obj.reward+"' style='width:"+obj.reward/52*100+"%;' >"+"</div>");
+			}
+			else{
+				pick(obj.y,obj.x).append("<div class='item hole' />");
+			}
+			
+		});
+		
+		$('#your_score').html("");
+		window.gridbackup = $('#grid').html();
+	
+		deploy();
+		
+	})
+	
+	
+}
+
+function deploy(timer = true){
+	if(timer){
+		$('#time').timer({
+		countdown: true,
+		duration: '30s',    	// This will start the countdown from 3 mins 40 seconds
+		callback: function() {	// This will execute after the duration has elapsed
+			gameOver();
+		}
+		});
+	}
+	
+		$('.row > div').click(function(){
+		if(!canMove) return false;
+		
+		i_ = $(this).parent().index();
+		j_ = $(this).index();
+		moveChar(i_,j_,null);
+	});
+}
+
+function moveChar(i_,j_,newpos){
+		console.log(newpos);
+		THIS = pick(i_,j_);
+		if(i_ == window.i && j_ == window.j) return false;
+		/*console.log("current:("+window.i+","+window.j+") - wanted:("+i_+","+j_+")");
+		console.log(Math.abs(i_ - window.i));
+		console.log(Math.abs(j_-window.j));*/
+		if(i_<0 || j_ < 0 || i_>8 || j_>8) {
+			//console.log("rejected");
+			return false;}
+		
+		{
+			window.moving = true;
+			if(i_==window.i) {j_= (j_>window.j) ? (window.j+1) : (window.j-1);}
+			else if(j_==window.j) {i_= (i_>window.i) ? (window.i+1) : (window.i-1);}
+			else {window.moving = false;return false;}
+			
+			THIS = pick(i_,j_);
+			
+			html_boy = pick(window.i,window.j).html();
+			pick(window.i,window.j).html('');
+			
+			//console.log(THIS.find(".item").data("reward"));
+			window.r = THIS.find(".item").data("reward");
+			if(window.r !== undefined)	window.score += window.r;
+			
+			window.moves--;
+			
+			if(window.moves == 0) {
+				window.canMove = false;
+			}
+			
+			if(THIS.find(".item").hasClass("hole")){
+				window.r = -0.3*window.score;
+				window.score *= 0.7;
+			}
+			
+			if(THIS.find(".item").length > 0){
+				
+				if(newpos == null){
+					var placed = false;
+					while (!placed ) {
+						n = Math.floor(Math.random() * 9);
+						m = Math.floor(Math.random() * 9);
+						if(pick(n,m).children(".item").length == 0 && !(n==i_ && m==j_)){
+							pick(n,m).html(THIS.html());
+							placed = true;
+						}
+					}
+				} else {
+						pick(newpos[1],newpos[0]).html(THIS.html());
+						console.log("Relocated "+i_+","+j_+" in: "+newpos+", "+pick(newpos[1],newpos[0]).html());
+				}
+			}
+
+			
+			THIS.html('');
+			pick(i_,j_).append(html_boy);
+			if($('.bonus').length != 4) alert("error: "+$('.bonus').length);
+			
+			window.i = i_; window.j = j_;
+			highlight_moves();
+			update_score();
+			window.moving = false;
+			}
+}
+function highlight_moves(){
+	$('.highlighted').removeClass('highlighted');
+	pick(window.i+1,window.j).addClass('highlighted');
+	pick(window.i,window.j+1).addClass('highlighted');
+	pick(window.i-1,window.j).addClass('highlighted');
+	pick(window.i,window.j-1).addClass('highlighted');
+}
+
+function update_score(){
+	if(window.r !== undefined)
+		$('#score_new').show().html(((window.r > 0) ? "<span style='color:green'>+" : "<span style='color:red'>" )+Math.round(window.r)+"</span>").delay(400).fadeOut();
+	if(window.userPlay){
+		$('#your_score').html("Your score: <b>"+Math.round(window.score)+"</b> ("+(50-window.moves)+"/50)");
+		if(!window.canMove) gameOver();
+	} else {
+		$('#AI_score').html("- AI score: <b>"+Math.round(window.score)+"</b> ("+(50-window.moves)+"/50)");
+	}
+}
+
+function AIPlayTheNext(){
+	console.log('playing the next');
+	while(window.moving) {}
+	if($('.bonus').length != 4) alert("error: "+$('.bonus').length);
+	act = window.actions[window.AIPlayIdx];
+			// 0 - up, 1 - down, 2 - left, 3 - right
+			if(act[0] == 0){
+				moveChar(window.i-1,window.j,act[1]);
+			} else if(act[0] == 1){
+				moveChar(window.i+1,window.j,act[1]);
+			} else if(act[0] == 2){
+				moveChar(window.i,window.j-1,act[1]);
+			} else if(act[0] == 3){
+				moveChar(window.i,window.j+1,act[1]);
+			}
+			console.log("("+window.j+","+window.i+","+window.score+")");
+			window.AIPlayIdx++;
+			if(window.AIPlayIdx < 50) 
+			{
+				console.log('registering new move..');
+				window.nextMovePlayer = setTimeout(function(){AIPlayTheNext();},200);}
+			else gameOver();
+}
+
+function gameOver(){
+	console.log('calling game over');
+	if(window.userPlay){
+		$('#grid,#bar').fadeOut();
+		$('#modal').show().html("<h2>OK. Now AI will play the same game.</h2>");
+		window.score = 0;
+		window.moves = 50;
+		$("#time").timer('remove').hide();
+		window.canMove = false;
+		$('#grid').html(window.gridbackup);	
+		window.i = window.original_i; window.j = window.original_j;
+		//deploy(false);
+		window.userPlay = false;
+		window.AIPlayIdx = 0;
+		$('#grid,#bar').delay(3000).fadeIn(function(){
+			if ($(":animated").length === 0)
+			$('#modal').fadeOut(function(){
+				console.log('starting loop');
+				AIPlayTheNext();});
+			
+		});
+		
+	} else {
+		if(parseInt($("#your_score b").text()) > parseInt($("#AI_score b").text())) winner = "You"; else winner = "AI";
+		$('#modal').html("<h2 onclick='newGameFromNetwork();'>"+winner+" won! Press SPACE to start a new game or click here.</h2>").show();
+	}
+}
+</script>
+<style>
+#container{
+	height:90%;
+	width:90%;
+	margin:0 auto;
+	position:relative;
+}
+#bar{
+	position:relative;
+	background-color:rgba(255,255,255,0.7);
+	font-color:black;
+	padding:15px;
+}
+#time {border:1px solid black;padding:2px; margin-right:4px}
+#score_new {
+	font-size:45px;
+	font-weight:bold;
+	background-color:white;
+	position:absolute;top:5%;right:5%
+}
+#container .row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.row{
+	height:10%;
+}
+.row div{
+	width: 100%;
+	border:1px solid white;
+}
+
+.row > div > div {border: none}
+
+.item {	
+	width:100%;
+	height:100%;
+	background-size: cover;
+}
+
+.hole {
+	background-image:url('imgs/hole.png');
+}
+
+.boy {
+	background-image:url('imgs/Boy-64.png');
+	background-size: contain;
+background-position: center center;
+background-repeat: no-repeat;
+}
+
+.bonus {
+	background-image:url('imgs/strawberry.png');
+	background-size: contain;
+	background-repeat:no-repeat;
+	background-position: center center;
+	margin:0 auto;
+	vertical-align:middle;
+}
+.highlighted{
+	cursor:pointer;
+	background-color:rgba(255,255,0,0.4);
+}
+#null{display:none}
+
+.row .label {
+	font-size: 18px;
+    color: red;
+    padding:3px;
+    font-weight: bold;
+    width:auto;
+    float:left
+}
+#modal {
+	position: absolute;top: 39%;width: 80%;background: white;margin: 0 auto;padding: 5px;text-align: center;display:none;
+	left:10%;
+}
+html {
+  font-size: 16px;
+}
+@media screen and (min-width: 370px) {
+html{font-size: 14px;}
+}
+    
+@media screen and (min-width: 767px) {
+html{font-size: 22px;}
+}
+
+</style>
+</head>
+<body style="background-image:url('imgs/grass2.jpg');">
+	<div id="null"></div>
+<div id="container" tabindex="0">
+	<div id="modal" style=""></div>
+	<div id="grid">
+	</div>
+	<div id="bar">
+		<div id="time" style="float:left"></div><br style="clear:both" />
+		<div style="float:left" id="your_score"><h3 onclick='newGameFromNetwork(); $(this).hide();'>
+			Instructions: Press ← → ↑ ↓ or click the mouse to play.<br /><br />
+			<i>Press SPACE or click here to get a new game.</i></h3>
+			<br />
+			</div><div style="float:left" id="AI_score"></div>
+		<div style="float:right" id="score_new"></div>
+		<br style="clear:both">
+	</div>
+</div>
+</body>
+</html>
